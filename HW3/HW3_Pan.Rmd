@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+#Ray's edit to the github repo
 #i am going to make an edit for github practice. this is it.
 # HW3
 

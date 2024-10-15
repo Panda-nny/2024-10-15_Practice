@@ -1,0 +1,77 @@
+---
+title: "HW3"
+author: "Danny Pan"
+date: "2024-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# HW3
+
+```{r results = 'hide', message = FALSE}
+library(tidyverse)
+Shows <- read_csv("Homework3_tvSeries.csv")
+Ratings <- read_csv("Homework3_ratings.csv")
+Cast <- read_csv("Homework3_principals.csv")
+```
+
+## Q1.
+
+```{r}
+ended <- filter(Shows,endYear > 0) %>% mutate(length = endYear - startYear)
+ggplot(ended, aes(x = length)) + geom_bar() + labs(title = "Frequency of Shows by Years Ran", x = "Years Ran", y = "Count")
+#nrow(ended[ended$length == 0,])
+```
+
+A total of `r nrow(ended[ended$length == 0,])` TV shows in this dataset ended in the same year as they started.
+
+## Q2.
+
+```{r}
+combo <- inner_join(Shows, Ratings, by = 'tconst')
+#round(nrow(combo) / nrow(Shows) * 100,2)
+
+```
+
+A total of `r round(nrow(combo) / nrow(Shows) * 100,2)`% of the shows have rating information. The names of the shows with a rating of at least 9 with a minimum of 20k votes are listed below:
+
+```{r}
+q2 <- filter(combo,averageRating >= 9 & numVotes >= 20000) %>% arrange(primaryTitle) %>% select(primaryTitle)
+
+print(q2)
+```
+
+## Q3.
+
+```{r}
+q3 <- inner_join(Shows, Cast, by = 'tconst')
+q3$ageAtStart <- q3$startYear - q3$birthYear 
+table1 <- aggregate(ageAtStart~category, data = q3, FUN = median)
+table1$medianAgeAtStart <- table1$ageAtStart
+print(select(table1,c(1,3)))
+```
+
+As shown from the table above, the median ages for actresses when a show started is lower than any other group, with writers being the highest. The standard deviation of the median age at a show's start between groups is `r round(sd(table1$ageAtStart),2)`.
+
+# **Part 2 - Project Reflection.**
+
+## Q4.
+
+Why did you choose the dataset you used for this project? What about the context of the data interested you?  Why did you choose the predictors you did, and what did you expect to find in their relationships with the outcome variable?
+
+I did not have a significant reason to choose the dataset I used, I didn't have a strong preference of one over an other. I guess I like dogs. I chose the predictors of coat properties as my categorical predictor and drooling/shedding level as my numerical predictors as I considered these to be strong predictors of their overall rank (my outcome variable). I also believed that these variables would reasonably be able to be combined into groups.
+
+## Q5.
+
+What challenges did you face while completing the assignment, and how did you overcome those challenges?  What do you plan to do differently next time as a result?  List at least one specific thing you learned about yourself as a data science student as a result.
+
+My biggest challenge in completing my assignment was describing my outcome variable. Although I strongly believed that the ranking of a dog breed was the most intuitive/best outcome variable, I felt a bit awkward working in the respective section because rankings in itself is not continuous, leading to more or less of a uniform histogram. In the future, I might select a different type of graph, such as a barplot (which I believe would be more appropriate for displaying the variable although the result would've been more or less the same). However, I believe I was able to overcome the challenge of working with this variable by digging deeper into the source material, which is how I logically determined the minimum sample size of the source dataset. I also was able to determine that the provided dataset had some faulty data, which altered my results and taught me firsthand the common saying of "garbage in, garbage out" in the realm of data science/analytics.
+
+## Q6.
+
+Describe at least one way your personal background influenced how you analyzed this data or presented your analysis. What might someone else have done differently if analyzing the same dataset?
+
+I believe I have a strong mathematical background, which led me to connect the dots to determine the minimum sample size of the registry used. Additionally, I am currently taking another class that is taught in R (PSY 317L), where I learned about using the jitter function to better visualize data. I believe other people wouldn't have used a scatterplot to demonstrate correlation with similar data types.

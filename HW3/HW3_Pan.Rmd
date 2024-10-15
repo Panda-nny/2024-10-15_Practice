@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 #i am going to make an edit for github practice. this is it.
 # HW3
 
+#this is my edit -lucien
+
 ```{r results = 'hide', message = FALSE}
 library(tidyverse)
 Shows <- read_csv("Homework3_tvSeries.csv")
